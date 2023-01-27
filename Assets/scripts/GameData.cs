@@ -128,6 +128,7 @@ public class GameData : MonoBehaviour
 				Debug.Log(ex.Message + ", " + ex.StackTrace);
 			}
 		}
+        audioClip.name = path;
 		return audioClip;
 	}
 

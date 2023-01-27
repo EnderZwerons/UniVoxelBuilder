@@ -50,6 +50,11 @@ public class UIController : MonoBehaviour
         instance = this;
     }
 
+    public void SetBadControls(bool bad)
+    {
+        PlayerPrefs.SetInt("badcontrols", (bad ? 1 : 0));
+    }
+
     void Update()
     {
         for (int i = 0; i < popups.Count; i++)

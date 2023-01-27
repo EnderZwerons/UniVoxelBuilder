@@ -34,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
     {
         get
         {
-            return Input.GetKey(KeyCode.LeftShift) && Input.GetKey("w") && !Input.GetKey("a") && !Input.GetKey("d") && !Input.GetKey("s");
+            return Input.GetKey(sprintKey) && Input.GetKey("w") && !Input.GetKey("a") && !Input.GetKey("d") && !Input.GetKey("s");
         }
     }
 
@@ -92,6 +92,22 @@ public class PlayerMovement : MonoBehaviour
         GetComponent<CharacterController>().center = new Vector3(0f, (fly) ? 99999f : -0.337f, 0f);
     }
 
+    public KeyCode sprintKey
+    {
+        get
+        {
+            return (PlayerPrefs.GetInt("badcontrols") == 1 ? KeyCode.LeftControl : KeyCode.LeftShift);
+        }
+    }
+
+    public KeyCode crouchKey
+    {
+        get
+        {
+            return (PlayerPrefs.GetInt("badcontrols") == 1 ? KeyCode.LeftShift : KeyCode.C);
+        }
+    }
+
     void Update()
     {
         if (UIController.inventoryOpen)
@@ -128,10 +144,10 @@ public class PlayerMovement : MonoBehaviour
             controller.Move(velocity * Time.deltaTime);
             return;
         }
-        float x2 = -updateKeyboardControls().x ;
-        float z2 = -updateKeyboardControls().y ;
+        float x2 = -updateKeyboardControls().x;
+        float z2 = -updateKeyboardControls().y;
         Vector3 move2 = transform.right * x2 + transform.forward * z2;
-        move2.y += (Input.GetKey(KeyCode.Space) ? 3f : (Input.GetKey(KeyCode.C) ? -3f : 0f));
+        move2.y += (Input.GetKey(KeyCode.Space) ? 3f : (Input.GetKey(crouchKey) ? -3f : 0f));
         if (move2.magnitude > 1)
         {
             move2 /= move2.magnitude;

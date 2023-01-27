@@ -2,14 +2,18 @@
 
 welcome the to manual. let me explain the .blocklist format to you. it goes like this:
 
-{blockname} idx(this declares the index) {indexnumber} tex(this declares the texture name) {texname} snd(this declares the sound type) {soundtype}
+{blockname} idx(this declares the index) {indexnumber} tex(this declares the texture name) {texname} plc(this declares the sound for placing a block!) {audioname (file extention not included)} des(this declares the sound for destroying a block!) {audioname (file extention not included)}
 
 make sure to format it correctly. every parameter is separated by a space. so dont add anything extra!
 
-index is what position it will appear in, in the list of blocks. the first index of block will be the default.
+index is what position it will appear in in the list of blocks. the block index of 0 will be the default.
 
 textures are stored in StreamingAssets/tex! make sure your file format is .png!
 
-sounds are not customizable without source code.. yet.. as of now there are 4 sound templates. if you want you can always use the source code to add more!
+audio is stored in StreamingAssets/sfx! make sure your file format is .ogg!
+
+here is an explanation of the .uvbmap files.
+
+the format goes like this: {blockindex},{x position},{y position},{z position}
 
 ---
