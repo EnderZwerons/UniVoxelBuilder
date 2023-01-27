@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mouselook : MonoBehaviour {
-
-
+public class Mouselook : MonoBehaviour
+{
     public float mouseSensitivity = 100f;
 
     public Transform playerBody;
 
     float xRotation = 0f;
 
-	// Use this for initialization
 	void Start()
     {
         if (Application.isEditor)
@@ -21,7 +19,6 @@ public class Mouselook : MonoBehaviour {
         Cursor.lockState = CursorLockMode.Locked;
 	}
 	
-	// Update is called once per frame
 	void Update()
     {
         if (UIController.inventoryOpen)
