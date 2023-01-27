@@ -1,14 +1,14 @@
-Asphalt idx 0 tex asphalt-block snd stone
-Asphalt 2 idx 1 tex asphalt-block2 snd stone
-Dirt idx 2 tex dirt-block snd grass
-Grass idx 3 tex grass-block snd grass
-Gravel idx 4 tex gravel-block snd grass
-Red-Wool idx 5 tex red-wool-block snd snow
-Rough Asphalt idx 6 tex rough-asphalt-block snd stone
-Sandstone idx 7 tex sandstone-block snd stone
-Snow idx 8 tex snow-block snd snow
-Stone idx 9 tex stone-block snd stone
-White Wool idx 10 tex white-wool-block snd snow
-Wood-Log idx 11 tex wood-log-block snd wood
-Wooden-Planks idx 12 tex wooden-planks-block snd wood
-Yellow-Wool idx 13 tex yellow-wool-block snd snow
+Asphalt idx 0 tex asphalt-block plc stone3 des Stone
+Asphalt 2 idx 1 tex asphalt-block2 plc stone3 des Stone
+Dirt idx 2 tex dirt-block plc Grass des Grass
+Grass idx 3 tex grass-block plc Grass des Grass
+Gravel idx 4 tex gravel-block plc Grass des Grass
+Red-Wool idx 5 tex red-wool-block plc snow3 des Snow
+Rough Asphalt idx 6 tex rough-asphalt-block plc stone3 des Stone
+Sandstone idx 7 tex sandstone-block plc stone3 des Stone
+Snow idx 8 tex snow-block plc snow3 des Snow
+Stone idx 9 tex stone-block plc stone3 des Stone
+White Wool idx 10 tex white-wool-block plc snow3 des Snow
+Wood-Log idx 11 tex wood-log-block plc wood3 des Wood
+Wooden-Planks idx 12 tex wooden-planks-block plc wood3 des Wood
+Yellow-Wool idx 13 tex yellow-wool-block plc snow3 des Snow

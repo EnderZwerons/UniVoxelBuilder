@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
@@ -15,6 +15,8 @@ public class GameData : MonoBehaviour
 
     public List<GameObject> availableBlocks = new List<GameObject>();
 
+    public static List<BlockSounds> parsedBlockSounds = new List<BlockSounds>();
+
     public Vector2[] planeSizes;
 
     public int blockPlacedAmount;
@@ -29,21 +31,7 @@ public class GameData : MonoBehaviour
 
     public BlockSounds[] blockSounds;
 
-    public static BlockData.BlockSoundType GetBlockTypeFromString(string input)
-    {
-        switch (input)
-        {
-            case "stone":
-                return BlockData.BlockSoundType.stone;
-            case "grass":
-                return BlockData.BlockSoundType.grass;
-            case "snow":
-                return BlockData.BlockSoundType.snow;
-            case "wood":
-                return BlockData.BlockSoundType.wood;
-        }
-        return BlockData.BlockSoundType.stone;
-    }
+    private bool finishedParsedBlockSounds;
 
     [Serializable]
     public class BlockData
@@ -54,23 +42,14 @@ public class GameData : MonoBehaviour
 
         public Texture tex;
 
-        public BlockSoundType blockSoundType;
-
-        public enum BlockSoundType
-        {
-            stone = 0,
-
-            grass = 1,
-
-            snow = 2,
-
-            wood = 3
-        };
+        public BlockSounds blockSounds = new BlockSounds();
     }
 
     [Serializable]
     public class BlockSounds
     {
+        public string name;
+
         public AudioClip place;
 
         public AudioClip destroy;
@@ -124,22 +103,39 @@ public class GameData : MonoBehaviour
         return a;
     }
 
+    public static AudioClip LoadStreamingAudioClip(string path)
+	{
+		AudioClip audioClip = null;
+		using (UnityWebRequest audioClip2 = UnityWebRequestMultimedia.GetAudioClip(StreamingAssets.SFXPath + "/" + path + ".ogg", AudioType.OGGVORBIS))
+		{
+			audioClip2.SendWebRequest();
+			try
+			{
+				while (!audioClip2.isDone)
+				{
+				}
+				if (audioClip2.isNetworkError || audioClip2.isHttpError)
+				{
+					Debug.Log(audioClip2.error + path);
+				}
+				else
+				{
+					audioClip = DownloadHandlerAudioClip.GetContent(audioClip2);
+				}
+			}
+			catch (Exception ex)
+			{
+				Debug.Log(ex.Message + ", " + ex.StackTrace);
+			}
+		}
+		return audioClip;
+	}
+
     public static int BlocksAmount
     {
         get
         {
-            int finalAmount = 0;
-            List<BlockData> ParsedData = new List<BlockData>();
-            string[] blockInfos = File.ReadAllText(StreamingAssets.BlockListPath).Split('\r', '\n');
-            for (int i = 0; i < blockInfos.Length; i++)
-            {
-                if (blockInfos[i].StartsWith("//"))
-                {
-                    continue;
-                }
-                finalAmount++;
-            }
-            return finalAmount;
+            return File.ReadAllText(StreamingAssets.BlockListPath).Split('\r', '\n').Length;
         }
     }
     
@@ -162,9 +158,9 @@ public class GameData : MonoBehaviour
             {
                 block = tempBlock.GetComponent<Block>();
             }
+            block.place = blockData[i].blockSounds.place;
+            block.destroy = blockData[i].blockSounds.destroy;
             block.indexBlock = blockData[i].index;
-            block.place = blockSounds[(int)blockData[i].blockSoundType].place;
-            block.destroy = blockSounds[(int)blockData[i].blockSoundType].destroy;
             tempBlock.GetComponent<MeshRenderer>().material.SetTexture("_MainTex", blockData[i].tex);
             if (tempBlock.name != "")
             {
@@ -187,10 +183,6 @@ public class GameData : MonoBehaviour
         string[] blockInfos = content.Split('\r', '\n');
         for (int i = 0; i < blockInfos.Length; i++)
         {
-            if (blockInfos[i].StartsWith("//"))
-            {
-                continue;
-            }
             BlockData newBlockData = new BlockData();
             string[] blockLines = blockInfos[i].Split(' ');
             for (int j = 0; j < blockLines.Length; j++)
@@ -205,8 +197,11 @@ public class GameData : MonoBehaviour
                     tex.filterMode = FilterMode.Point;
                     newBlockData.tex = tex;
                     break;
-                    case "snd":
-                    newBlockData.blockSoundType = GetBlockTypeFromString(blockLines[j + 1]);
+                    case "plc":
+                    newBlockData.blockSounds.place = LoadStreamingAudioClip(blockLines[j + 1]);
+                    break;
+                    case "des":
+                    newBlockData.blockSounds.destroy = LoadStreamingAudioClip(blockLines[j + 1]);
                     break;
                 }
                 newBlockData.name = blockLines[0];

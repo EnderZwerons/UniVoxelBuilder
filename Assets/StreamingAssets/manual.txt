@@ -1,6 +1,6 @@
 ---
 
-welcome to manual. let me explain the .blocklist format to you. it goes like this:
+welcome the to manual. let me explain the .blocklist format to you. it goes like this:
 
 {blockname} idx(this declares the index) {indexnumber} tex(this declares the texture name) {texname} snd(this declares the sound type) {soundtype}
 
