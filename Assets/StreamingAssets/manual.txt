@@ -1,0 +1,15 @@
+---
+
+welcome to manual. let me explain the .blocklist format to you. it goes like this:
+
+{blockname} idx(this declares the index) {indexnumber} tex(this declares the texture name) {texname} snd(this declares the sound type) {soundtype}
+
+make sure to format it correctly. every parameter is separated by a space. so dont add anything extra!
+
+index is what position it will appear in, in the list of blocks. the first index of block will be the default.
+
+textures are stored in StreamingAssets/tex! make sure your file format is .png!
+
+sounds are not customizable without source code.. yet.. as of now there are 4 sound templates. if you want you can always use the source code to add more!
+
+---
