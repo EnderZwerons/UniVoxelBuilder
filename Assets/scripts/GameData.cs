@@ -159,7 +159,7 @@ public class GameData : MonoBehaviour
     public IEnumerator InitializeMusic()
     {
         List<string> ingameMusics = NodelistReader.GetNodelistFile("Gamedata").GetNode("ingamemusic").lines;
-        List<string> menuMusics = NodelistReader.GetNodelistFile("Gamedata").GetNode("ingamemusic").lines;
+        List<string> menuMusics = NodelistReader.GetNodelistFile("Gamedata").GetNode("menumusic").lines;
         for (int i = 0; i < ingameMusics.Count; i++)
         {
             yield return null;
