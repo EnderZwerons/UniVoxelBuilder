@@ -1,6 +1,14 @@
 ---
 
-welcome the to manual. let me explain the .blocklist format to you. it goes like this:
+welcome the to manual. this manual provides information on how to mod UniVoxelBuilder.
+
+here is some general information.
+
+textures are stored in StreamingAssets/tex! make sure your file format is .png!
+
+audio is stored in StreamingAssets/sfx! make sure your file format is .ogg!
+
+here is an explanation of the .blocklist file.
 
 {blockname} idx(this declares the index) {indexnumber} tex(this declares the texture name) {texname} plc(this declares the sound for placing a block!) {audioname (file extention not included)} des(this declares the sound for destroying a block!) {audioname (file extention not included)}
 
@@ -8,12 +16,22 @@ make sure to format it correctly. every parameter is separated by a space. so do
 
 index is what position it will appear in in the list of blocks. the block index of 0 will be the default.
 
-textures are stored in StreamingAssets/tex! make sure your file format is .png!
-
-audio is stored in StreamingAssets/sfx! make sure your file format is .ogg!
-
 here is an explanation of the .uvbmap files.
 
 the format goes like this: {blockindex},{x position},{y position},{z position}
+
+here is an explanation of the .musiclist file.
+
+the format goes like this:
+
+menu music: declares the following node is to add menu music.
+
+ingame music: declares the following node is to add menu music
+
+end tells the interpreter when to break out of the node and move to the next
+
+to declare a soundtrack simply follow this format: mus:(this is so the interpreter knows this is a track){filename}
+
+music is selected randomly from the list. this is subject to change.
 
 ---
