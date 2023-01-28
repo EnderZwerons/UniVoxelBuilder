@@ -15,8 +15,6 @@ public class GameData : MonoBehaviour
 
     public List<GameObject> availableBlocks = new List<GameObject>();
 
-    public static List<BlockSounds> parsedBlockSounds = new List<BlockSounds>();
-
     public Vector2[] planeSizes;
 
     public int blockPlacedAmount;
@@ -29,9 +27,15 @@ public class GameData : MonoBehaviour
 
     public GameObject templateBlock;
 
-    public BlockSounds[] blockSounds;
-
     private bool finishedParsedBlockSounds;
+
+    public List<AudioClip> menuMusic;
+
+    public List<AudioClip> ingameMusic;
+
+    public AudioSource menuMusicSource;
+
+    public AudioSource ingameMusicSource;
 
     [Serializable]
     public class BlockData
@@ -55,14 +59,18 @@ public class GameData : MonoBehaviour
         public AudioClip destroy;
     }
 
-    void Awake()
-    {
-        instance = this;
-    }
-
     void Start()
     {
         InitializeBlocks();
+        StartCoroutine(InitializeMusic());
+    }
+
+    void Update()
+    {
+        if (instance != this)
+        {
+            instance = this;
+        }
     }
 
     public void SetPlaneBlock(int num)
@@ -86,7 +94,6 @@ public class GameData : MonoBehaviour
         {
             if (obj.layer != 9)
             {
-                Debug.Log("continued because we were looking for 9 but got " + obj.layer);
                 continue;
             }
             Block block = obj.GetComponent<Block>();
@@ -128,7 +135,14 @@ public class GameData : MonoBehaviour
 				Debug.Log(ex.Message + ", " + ex.StackTrace);
 			}
 		}
-        audioClip.name = path;
+        try
+        {
+            audioClip.name = path;
+        }
+        catch
+        {
+            Debug.Log("looks like we couldn't find " + path);
+        }
 		return audioClip;
 	}
 
@@ -138,6 +152,75 @@ public class GameData : MonoBehaviour
         {
             return File.ReadAllText(StreamingAssets.BlockListPath).Split('\r', '\n').Length;
         }
+    }
+
+    public List<List<string>> ReadMusicListFile(string content)
+    {
+        List<string> ingameMusics = new List<string>();
+        List<string> menuMusics = new List<string>();
+        string[] lines = content.Split(Environment.NewLine.ToCharArray());
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string line = lines[i];
+            if (line == "menu music:")
+            {
+                i++;
+                for (;;i++)
+                {
+                    if (lines[i].StartsWith("mus:"))
+                    {
+                        menuMusics.Add(lines[i].Split(':')[1]);
+                    }
+                    else if (lines[i] == "end")
+                    {
+                        break;
+                    }
+                }
+            }
+            else if (line == "ingame music:")
+            {
+                i++;
+                for (;;i++)
+                {
+                    if (lines[i].StartsWith("mus:"))
+                    {
+                        ingameMusics.Add(lines[i].Split(':')[1]);
+                    }
+                    else if (lines[i] == "end")
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        return new List<List<string>> { menuMusics, ingameMusics };
+    }
+
+    public IEnumerator InitializeMusic()
+    {
+        List<List<string>> musicListFileContents = ReadMusicListFile(File.ReadAllText(StreamingAssets.MusicListPath));
+        for (int i = 0; i < musicListFileContents[0].Count; i++)
+        {
+            yield return null;
+            menuMusic.Add(LoadStreamingAudioClip(musicListFileContents[0][i]));
+        }
+        for (int i = 0; i < musicListFileContents[1].Count; i++)
+        {
+            yield return null;
+            ingameMusic.Add(LoadStreamingAudioClip(musicListFileContents[1][i]));
+        }
+        RandomMusic(true);
+        RandomMusic(false);
+    }
+
+    public void RandomMusic(bool menu)
+    {
+        if (menu)
+        {
+            menuMusicSource.clip = menuMusic[UnityEngine.Random.Range(0, menuMusic.Count)];
+            return;
+        }
+        ingameMusicSource.clip = ingameMusic[UnityEngine.Random.Range(0, ingameMusic.Count)];
     }
     
 

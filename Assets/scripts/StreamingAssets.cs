@@ -35,4 +35,12 @@ public class StreamingAssets : MonoBehaviour
             return Application.streamingAssetsPath + "/blocks.blocklist";
         }
     }
+
+    public static string MusicListPath
+    {
+        get
+        {
+            return Application.streamingAssetsPath + "/music.musiclist";
+        }
+    }
 }
