@@ -1,37 +1,55 @@
+hi! welcome to the manual. this is a simple tutorial on how to mod the game. lets start with nodelists!
+
+|||
+
 ---
 
-welcome the to manual. this manual provides information on how to mod UniVoxelBuilder.
+    nodelists are simple. here is how they work:
 
-here is some general information.
+    node: declares a node that the game finds by name.
 
-textures are stored in StreamingAssets/tex! make sure your file format is .png!
+    anything inside this node is data the game can use.
 
-audio is stored in StreamingAssets/sfx! make sure your file format is .ogg!
+    end tells the reader when to move onto the next node.
 
-here is an explanation of the .blocklist file.
+---
 
-{blockname} idx(this declares the index) {indexnumber} tex(this declares the texture name) {texname} plc(this declares the sound for placing a block!) {audioname (file extention not included)} des(this declares the sound for destroying a block!) {audioname (file extention not included)}
+|||
 
-make sure to format it correctly. every parameter is separated by a space. so dont add anything extra!
+---
 
-index is what position it will appear in in the list of blocks. the block index of 0 will be the default.
+    the blocklist node stores all the block data. it works as follows:
 
-here is an explanation of the .uvbmap files.
+    every space separates the data. so dont change the format at all! (this is subject to change for easier writing and reading)
 
-the format goes like this: {blockindex},{x position},{y position},{z position}
+    idx declares the block's index.
 
-here is an explanation of the .musiclist file.
+    tex declares the block's tex name (located in the tex folder. keep in mind the format has to be .png)
 
-the format goes like this:
+    plc declares the block's place sound name (located in the sfx folder. keep in mind the format has to be .ogg)
 
-menu music: declares the following node is to add menu music.
+    des declares the block's destroy sound name
 
-ingame music: declares the following node is to add menu music
+---
 
-end tells the interpreter when to break out of the node and move to the next
+|||
 
-to declare a soundtrack simply follow this format: mus:(this is so the interpreter knows this is a track){filename}
+---
 
-music is selected randomly from the list. this is subject to change.
+    the menu and ingame music nodes are very easy to understand.
+    
+    inside each node is a list of music file names. the game will play these at random. (keep in mind the format has to be .ogg)
+
+---
+
+lets move onto .uvbmap files. it is not recommended to edit these manually.
+
+|||
+
+---
+
+    uvbmaps are simple. the format is as follows:
+
+    {blockindex},{x position},{y position},{z position}
 
 ---

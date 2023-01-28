@@ -1,3 +1,4 @@
+node:blocklist
 Asphalt idx 0 tex asphalt-block plc stone3 des Stone
 Asphalt 2 idx 1 tex asphalt-block2 plc stone3 des Stone
 Dirt idx 2 tex dirt-block plc Grass des Grass
@@ -12,3 +13,12 @@ White Wool idx 10 tex white-wool-block plc snow3 des Snow
 Wood-Log idx 11 tex wood-log-block plc wood3 des Wood
 Wooden-Planks idx 12 tex wooden-planks-block plc wood3 des Wood
 Yellow-Wool idx 13 tex yellow-wool-block plc snow3 des Snow
+endNode
+
+node:menumusic
+menu-mus-def
+endNode
+
+node:ingamemusic
+ingame-mus-def
+endNode

@@ -28,19 +28,11 @@ public class StreamingAssets : MonoBehaviour
         }
     }
 
-    public static string BlockListPath
+    public static string GamedataPath
     {
         get
         {
-            return Application.streamingAssetsPath + "/blocks.blocklist";
-        }
-    }
-
-    public static string MusicListPath
-    {
-        get
-        {
-            return Application.streamingAssetsPath + "/music.musiclist";
+            return Application.streamingAssetsPath + "/gamedata.nodelist";
         }
     }
 }

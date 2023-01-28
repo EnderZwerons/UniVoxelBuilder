@@ -6,6 +6,7 @@ using System.IO;
 using System;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using Nodelist;
 
 public class GameData : MonoBehaviour
 {
@@ -61,6 +62,7 @@ public class GameData : MonoBehaviour
 
     void Start()
     {
+        NodelistReader.InitializeNodelist(File.ReadAllText(StreamingAssets.GamedataPath), "Gamedata");
         InitializeBlocks();
         StartCoroutine(InitializeMusic());
     }
@@ -150,64 +152,23 @@ public class GameData : MonoBehaviour
     {
         get
         {
-            return File.ReadAllText(StreamingAssets.BlockListPath).Split('\r', '\n').Length;
+            return NodelistReader.GetNodelistFile("Gamedata").GetNode("blocklist").lines.Count;
         }
-    }
-
-    public List<List<string>> ReadMusicListFile(string content)
-    {
-        List<string> ingameMusics = new List<string>();
-        List<string> menuMusics = new List<string>();
-        string[] lines = content.Split(Environment.NewLine.ToCharArray());
-        for (int i = 0; i < lines.Length; i++)
-        {
-            string line = lines[i];
-            if (line == "menu music:")
-            {
-                i++;
-                for (;;i++)
-                {
-                    if (lines[i].StartsWith("mus:"))
-                    {
-                        menuMusics.Add(lines[i].Split(':')[1]);
-                    }
-                    else if (lines[i] == "end")
-                    {
-                        break;
-                    }
-                }
-            }
-            else if (line == "ingame music:")
-            {
-                i++;
-                for (;;i++)
-                {
-                    if (lines[i].StartsWith("mus:"))
-                    {
-                        ingameMusics.Add(lines[i].Split(':')[1]);
-                    }
-                    else if (lines[i] == "end")
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-        return new List<List<string>> { menuMusics, ingameMusics };
     }
 
     public IEnumerator InitializeMusic()
     {
-        List<List<string>> musicListFileContents = ReadMusicListFile(File.ReadAllText(StreamingAssets.MusicListPath));
-        for (int i = 0; i < musicListFileContents[0].Count; i++)
+        List<string> ingameMusics = NodelistReader.GetNodelistFile("Gamedata").GetNode("ingamemusic").lines;
+        List<string> menuMusics = NodelistReader.GetNodelistFile("Gamedata").GetNode("ingamemusic").lines;
+        for (int i = 0; i < ingameMusics.Count; i++)
         {
             yield return null;
-            menuMusic.Add(LoadStreamingAudioClip(musicListFileContents[0][i]));
+            ingameMusic.Add(LoadStreamingAudioClip(ingameMusics[i]));
         }
-        for (int i = 0; i < musicListFileContents[1].Count; i++)
+        for (int i = 0; i < menuMusics.Count; i++)
         {
             yield return null;
-            ingameMusic.Add(LoadStreamingAudioClip(musicListFileContents[1][i]));
+            menuMusic.Add(LoadStreamingAudioClip(menuMusics[i]));
         }
         RandomMusic(true);
         RandomMusic(false);
@@ -226,8 +187,7 @@ public class GameData : MonoBehaviour
 
     public void InitializeBlocks()
     {
-        string content = File.ReadAllText(StreamingAssets.BlockListPath);
-        List<BlockData> blockData = ParseBlockList(content);
+        List<BlockData> blockData = ParseBlockList();
         for (int i = 0; i < BlocksAmount; i++)
         {
             GameObject tempBlock = Instantiate(templateBlock);
@@ -261,10 +221,10 @@ public class GameData : MonoBehaviour
         planeBlock = availableBlocks[0];
     }
 
-    public List<BlockData> ParseBlockList(string content)
+    public List<BlockData> ParseBlockList()
     {
         List<BlockData> ParsedData = new List<BlockData>();
-        string[] blockInfos = content.Split('\r', '\n');
+        string[] blockInfos = NodelistReader.GetNodelistFile("Gamedata").GetNode("blocklist").lines.ToArray();
         for (int i = 0; i < blockInfos.Length; i++)
         {
             BlockData newBlockData = new BlockData();

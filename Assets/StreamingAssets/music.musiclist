@@ -1,7 +1,0 @@
-menu music:
-mus:menu-mus-def
-end
-
-ingame music:
-mus:ingame-mus-def
-end
