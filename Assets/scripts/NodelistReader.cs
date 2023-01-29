@@ -39,6 +39,10 @@ namespace Nodelist
 
         public static NodelistContent GetNodelistFile(string fileName)
         {
+            if (storedNodelistFiles.Find(x => x.fileName == fileName) == null)
+            {
+                Debug.LogError("wth??");
+            }
             return storedNodelistFiles.Find(x => x.fileName == fileName);
         }
     }

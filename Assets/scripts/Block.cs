@@ -9,4 +9,6 @@ public class Block : MonoBehaviour
     public AudioClip destroy;
 
     public int indexBlock;
+
+    public GameData.BlockData.BlockType blockType;
 }

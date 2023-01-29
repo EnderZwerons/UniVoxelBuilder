@@ -34,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
     {
         get
         {
-            return Input.GetKey(sprintKey) && Input.GetKey("w") && !Input.GetKey("a") && !Input.GetKey("d") && !Input.GetKey("s");
+            return Input.GetKey(sprintKey) && Input.GetKey("w") && !Input.GetKey("s");
         }
     }
 
@@ -75,11 +75,21 @@ public class PlayerMovement : MonoBehaviour
         {
             num *= 1.75f;
             num2 *= 1.75f;
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+            {
+                num *= 0.75f;
+                num2 *= 0.75f;
+            }
         }
         if (isFlying)
         {
             num *= 3f;
             num2 *= 3f;
+        }
+        if (Input.GetKey(KeyCode.Space))
+        {
+            num *= 1.35f;
+            num2 *= 1.35f;
         }
 		return new Vector2(num2, num);
 	}
@@ -136,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
                 move /= move.magnitude;
             }
             controller.Move(move * speed * Time.deltaTime);
-            if (Input.GetButtonDown("Jump") && isGrounded)
+            if (Input.GetKey(KeyCode.Space) && isGrounded)
             {
                 velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             }

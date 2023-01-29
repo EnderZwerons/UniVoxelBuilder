@@ -100,6 +100,11 @@ public class UIController : MonoBehaviour
         }
     }
 
+    public void SetFOV(float fov)
+    {
+        GameData.renderDistance = fov;
+    }
+
     public void LoadMapWithButton(TMP_InputField IF)
     {
         if (IF.text == "")

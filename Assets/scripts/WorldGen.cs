@@ -41,6 +41,35 @@ public class WorldGen : MonoBehaviour
         }
     }
 
+    public IEnumerator GenerateFlatPlanePreformancePerlinNoise(int x, int z, float multiplier)
+    {
+        for (int i = 0; i < x; i++)
+        {
+            yield return null;
+            float perlin = (float)Math.Round(Mathf.PerlinNoise(UnityEngine.Random.Range(0, 0.99f), UnityEngine.Random.Range(0, 0.99f)) * multiplier);
+            CreateBlock(new Vector3(i, perlin, 0f), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
+            if (perlin > 0f)
+            {
+                for (int j = (int)perlin; j > 0f; j--)
+                {
+                    CreateBlock(new Vector3(i, j, 0f), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
+                }
+            }
+            for (int i2 = 1; i2 < z; i2++)
+            {
+                float perlin2 = (float)Math.Round(Mathf.PerlinNoise(UnityEngine.Random.Range(0, 0.99f), UnityEngine.Random.Range(0, 0.99f)) * multiplier);
+                CreateBlock(new Vector3(i, perlin2, i2), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
+                if (perlin2 > 0f)
+                {
+                    for (int j = (int)perlin2; j > 0f; j--)
+                    {
+                        CreateBlock(new Vector3(i, j, i2), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
+                    }
+                }
+            }
+        }
+    }
+
     public IEnumerator GenerateFromUVBMapPreformace(string fileName)
     {
         string contents = "";
@@ -74,6 +103,24 @@ public class WorldGen : MonoBehaviour
             }
         }
         UIController.instance.Popup("generated map from " + (fileName.EndsWith(".uvbmap") ? fileName : fileName + ".uvbmap"), 2f);
+    }
+
+    public static Mesh CombineBlocks()
+    {
+        List<MeshFilter> meshFilters = new List<MeshFilter>();
+        foreach (GameObject block in GameObject.FindGameObjectsWithTag("block"))
+        {
+            meshFilters.Add(block.GetComponent<MeshFilter>());
+        }
+         CombineInstance[] combine = new CombineInstance[meshFilters.Count];
+        for (int i = 0; i < combine.Length; i++)
+        {
+            combine[i].mesh = meshFilters[i].sharedMesh;
+            combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+        }
+        Mesh mesh = new Mesh();
+        mesh.CombineMeshes(combine);
+        return mesh;
     }
 
     public void GenerateFromUVBMap(string fileName)
@@ -112,8 +159,14 @@ public class WorldGen : MonoBehaviour
         StartCoroutine(GenerateFlatPlanePreformance((int)startingPlane.x, (int)startingPlane.y));
     }
 
+    public GameObject test;
+
     void Update()
     {
+        //foreach (GameObject block in GameObject.FindGameObjectsWithTag("block"))
+        //{
+        //    block.GetComponent<MeshRenderer>().enabled = Vector3.Distance(PlayerMovement.instance.transform.position, block.transform.position) < GameData.renderDistance;
+        //}
     }
 
     public void CreateBlock(Vector3 pos, GameObject blockPrefab)

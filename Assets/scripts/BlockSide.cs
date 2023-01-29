@@ -21,11 +21,11 @@ public class BlockSide : MonoBehaviour
 
 	public BlockSideType blockSideType;
 
-	public GameObject block
+	public Block block
 	{
 		get
 		{
-			return transform.parent.gameObject;
+			return transform.parent.gameObject.GetComponent<Block>();
 		}
 	}
 }

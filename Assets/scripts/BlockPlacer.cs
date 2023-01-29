@@ -30,6 +30,7 @@ public class BlockPlacer : MonoBehaviour
 
     public void PlaceBlock(BlockSide BS)
 	{
+        float yModifier = (BS.block.blockType == GameData.BlockData.BlockType.water ? currentBlockPrefab.GetComponent<Block>().blockType == GameData.BlockData.BlockType.water ? 0.0001f : -0.0001f : currentBlockPrefab.GetComponent<Block>().blockType == GameData.BlockData.BlockType.water ? 0.0001f : 0f);
 		Vector3 targetPos = BS.block.transform.localPosition;
 		Vector3 newPos = targetPos;
 		switch (BS.blockSideType)
@@ -41,10 +42,10 @@ public class BlockPlacer : MonoBehaviour
 			newPos.z -= 1f;
 			break;
 			case BlockSide.BlockSideType.down:
-			newPos.y -= 1f;
+			newPos.y -= 1f + yModifier;
 			break;
 			case BlockSide.BlockSideType.up:
-			newPos.y += 1f;
+			newPos.y += 1f + yModifier;
 			break;
 			case BlockSide.BlockSideType.front:
 			newPos.x += 1f;
@@ -75,9 +76,9 @@ public class BlockPlacer : MonoBehaviour
 
     public void DestroyBlock(BlockSide BS)
     {
-        Destroy(BS.block);
+        Destroy(BS.block.gameObject);
         GameData.instance.blockPlacedAmount--;
-        GetComponent<AudioSource>().PlayOneShot(BS.block.GetComponent<Block>().destroy);
+        GetComponent<AudioSource>().PlayOneShot(BS.block.destroy);
     }
 
     void Awake()

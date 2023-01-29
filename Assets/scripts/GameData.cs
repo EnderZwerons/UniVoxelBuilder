@@ -26,7 +26,7 @@ public class GameData : MonoBehaviour
 
     public Dropdown blockListMenu;
 
-    public GameObject templateBlock;
+    public GameObject[] blockTypes;
 
     private bool finishedParsedBlockSounds;
 
@@ -38,6 +38,18 @@ public class GameData : MonoBehaviour
 
     public AudioSource ingameMusicSource;
 
+    public static float renderDistance
+    {
+        get
+        {
+            return PlayerPrefs.GetFloat("renderDistance");
+        }
+        set
+        {
+            PlayerPrefs.SetFloat("renderDistance", value);
+        }
+    }
+
     [Serializable]
     public class BlockData
     {
@@ -48,6 +60,15 @@ public class GameData : MonoBehaviour
         public Texture tex;
 
         public BlockSounds blockSounds = new BlockSounds();
+
+        public enum BlockType
+        {
+            normal = 0,
+
+            water = 1
+        };
+
+        public BlockType blockType;
     }
 
     [Serializable]
@@ -58,6 +79,11 @@ public class GameData : MonoBehaviour
         public AudioClip place;
 
         public AudioClip destroy;
+    }
+
+    public void SetRenderDistance(float distance)
+    {
+        renderDistance = distance;
     }
 
     void Start()
@@ -73,6 +99,16 @@ public class GameData : MonoBehaviour
         {
             instance = this;
         }
+    }
+
+    public static BlockData.BlockType GetBlockTypeFromString(string name)
+    {
+        switch (name)
+        {
+            case "water":
+            return BlockData.BlockType.water;
+        }
+        return BlockData.BlockType.normal;
     }
 
     public void SetPlaneBlock(int num)
@@ -190,7 +226,8 @@ public class GameData : MonoBehaviour
         List<BlockData> blockData = ParseBlockList();
         for (int i = 0; i < BlocksAmount; i++)
         {
-            GameObject tempBlock = Instantiate(templateBlock);
+            print(i);
+            GameObject tempBlock = Instantiate(blockTypes[(int)blockData[i].blockType]);
             tempBlock.layer = 10;
             tempBlock.name = blockData[i].name;
             Block block = null;
@@ -205,6 +242,7 @@ public class GameData : MonoBehaviour
             block.place = blockData[i].blockSounds.place;
             block.destroy = blockData[i].blockSounds.destroy;
             block.indexBlock = blockData[i].index;
+            block.blockType = blockData[i].blockType;
             tempBlock.GetComponent<MeshRenderer>().material.SetTexture("_MainTex", blockData[i].tex);
             if (tempBlock.name != "")
             {
@@ -246,6 +284,9 @@ public class GameData : MonoBehaviour
                     break;
                     case "des":
                     newBlockData.blockSounds.destroy = LoadStreamingAudioClip(blockLines[j + 1]);
+                    break;
+                    case "typ":
+                    newBlockData.blockType = GetBlockTypeFromString(blockLines[j + 1]);
                     break;
                 }
                 newBlockData.name = blockLines[0];
