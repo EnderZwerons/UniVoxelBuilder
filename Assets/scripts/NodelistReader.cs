@@ -20,12 +20,12 @@ namespace Nodelist
                     i++;
                     for (;;i++)
                     {
-                        if (lines[i] == ("endNode"))
+                        if (lines[i] == "endNode")
                         {
                             NLC.nodes.Add(newNode);
                             break;
                         }
-                        else
+                        else if (lines[i].Trim() != "")
                         {
                             newNode.lines.Add(lines[i]);
                         }
@@ -39,10 +39,6 @@ namespace Nodelist
 
         public static NodelistContent GetNodelistFile(string fileName)
         {
-            if (storedNodelistFiles.Find(x => x.fileName == fileName) == null)
-            {
-                Debug.LogError("wth??");
-            }
             return storedNodelistFiles.Find(x => x.fileName == fileName);
         }
     }

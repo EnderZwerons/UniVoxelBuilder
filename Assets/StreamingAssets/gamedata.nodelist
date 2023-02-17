@@ -1,28 +1,35 @@
 node:blocklist
-Asphalt idx 0 tex asphalt-block plc stone3 des Stone
-Asphalt 2 idx 1 tex asphalt-block2 plc stone3 des Stone
-Dirt idx 2 tex dirt-block plc Grass des Grass
-Grass idx 3 tex grass-block plc Grass des Grass
-Gravel idx 4 tex gravel-block plc Grass des Grass
-Red-Wool idx 5 tex red-wool-block plc snow3 des Snow
-Rough-Asphalt Asphalt idx 6 tex rough-asphalt-block plc stone3 des Stone
-Sandstone idx 7 tex sandstone-block plc stone3 des Stone
-Snow idx 8 tex snow-block plc snow3 des Snow
-Stone idx 9 tex stone-block plc stone3 des Stone
-White-Wool idx 10 tex white-wool-block plc snow3 des Snow
-Wood-Log idx 11 tex wood-log-block plc wood3 des Wood
-Wooden-Planks idx 12 tex wooden-planks-block plc wood3 des Wood
-Yellow-Wool idx 13 tex yellow-wool-block plc snow3 des Snow
-Leaves idx 14 tex leaf-block plc Grass des Grass
-Wood2 idx 15 tex wood-log-block2 plc wood3 des Wood
-Leaves2 idx 16 tex leaf-block2 plc Grass des Grass
-Sand idx 17 tex sand-block plc snow3 des Snow
-Moldy-Walls idx 18 tex moldy-wall-block plc Stone3 des Stone
-Stone-Bricks idx 19 tex stone-bricks plc Stone3 des Stone
-Purple-Bricks idx 20 tex purple-bricks plc Stone3 des Stone
-Red-Bricks idx 21 tex red-bricks plc Stone3 des Stone
-Blue-Bricks idx 22 tex blue-bricks plc Stone3 des Stone
-Water idx 23 tex water-block plc Grass des Stone typ water
+Asphalt:asphalt-block,Stone
+Asphalt 2:asphalt-block2,Stone
+Dirt:dirt-block,Grass
+Grass:grass-block,Grass
+Gravel:gravel-block,Grass
+Red-Wool:red-wool-block,Snow
+Rough-Asphalt:rough-asphalt-block,Stone
+Sandstone:sandstone-block,Stone
+Snow:snow-block,Snow
+Stone:stone-block,Stone
+White-Wool:white-wool-block,Snow
+Wood-Log:wood-log-block,Wood
+Wooden-Planks:wooden-planks-block,Wood
+Yellow-Wool:yellow-wool-block,Snow
+Leaves:leaf-block,Grass
+Wood2:wood-log-block2,Wood
+Leaves2:leaf-block2,Grass
+Sand:sand-block,Snow
+Moldy-Walls:moldy-wall-block,Stone
+Stone-Bricks:stone-bricks,Stone
+Purple-Bricks:purple-bricks,Stone
+Red-Bricks:red-bricks,Stone
+Blue-Bricks:blue-bricks,Stone
+Water:water-block,Stone,water,water
+endNode
+
+node:soundsettings
+Stone:stone3,Stone
+Grass:Grass,Grass
+Snow:snow3,Snow
+Wood:wood3,Wood
 endNode
 
 node:menumusic
@@ -31,4 +38,23 @@ endNode
 
 node:ingamemusic
 ingame-mus-def
+endNode
+
+node:skyboxes
+day:sd-up,sd-down,sd-front,sd-back,sd-left,sd-right
+endNode
+
+node:mats
+default:Mobile/Diffuse
+}
+water:Legacy Shaders/Particles/Alpha Blended
+SetColor"_Color"128,128,128,128
+}
+skybox:Skybox/6 Sided
+}
+endNode
+
+node:blockprefabs
+default:col on:0,0.5,0,1,0,1;0,-0.5,0,1,0,1;0.5,0,0,0,1,1;-0.5,0,0,0,1,1;0,0,-0.5,1,1,0;0,0,0.5,1,1,0:defaultBlock
+water:col off:0,0.5,0,1,0,1;0,-0.5,0,1,0,1;0.5,0,0,0,1,1;-0.5,0,0,0,1,1;0,0,-0.5,1,1,0;0,0,0.5,1,1,0:defaultBlock
 endNode

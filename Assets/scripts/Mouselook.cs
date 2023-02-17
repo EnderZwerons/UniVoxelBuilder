@@ -17,6 +17,7 @@ public class Mouselook : MonoBehaviour
             mouseSensitivity *= 5f;
         }
         Cursor.lockState = CursorLockMode.Locked;
+        GetComponent<Camera>().farClipPlane = PlayerPrefs.GetFloat("renderDistance");
 	}
 	
 	void Update()

@@ -28,6 +28,14 @@ public class StreamingAssets : MonoBehaviour
         }
     }
 
+    public static string ModelPath
+    {
+        get
+        {
+            return Application.streamingAssetsPath + "/model";
+        }
+    }
+
     public static string GamedataPath
     {
         get

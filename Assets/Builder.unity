@@ -20,11 +20,11 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientSkyColor: {r: 0.6745283, g: 0.7846143, b: 1, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: f1aeeda9d5d2cd7448a1971a4bc0ea0e, type: 2}
   m_HaloStrength: 0.5
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.43244225, g: 0.5842981, b: 0.88531995, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3775,13 +3775,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 762738811}
-  m_LocalRotation: {x: -0.05283799, y: -0.7318469, z: 0.6650721, w: 0.138879}
+  m_LocalRotation: {x: -0.643327, y: -0.60005516, z: 0.11335979, w: -0.46175084}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1447721294}
   m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 73.493004, y: -105.67901, z: 67.272}
+  m_LocalEulerAnglesHint: {x: 46.9, y: -216.69499, z: 77.614006}
 --- !u!108 &762738813
 Light:
   m_ObjectHideFlags: 0
@@ -3793,8 +3793,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.9292453, g: 0.98713547, b: 1, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 0.9386792, g: 0.9897799, b: 1, a: 1}
+  m_Intensity: 0.96
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -5355,7 +5355,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefs: 1
-  maxValue: 300
+  maxValue: 1000
   prefsValue: renderDistance
   labelToUpdate: {fileID: 1716174720}
 --- !u!114 &1254263887
@@ -8229,13 +8229,14 @@ MonoBehaviour:
   blockPlacedAmount: 0
   blockList: {fileID: 1472649226}
   blockListMenu: {fileID: 1686730148}
-  blockTypes:
-  - {fileID: 5450649500997774284, guid: ac40e8366a93584439f0860154dd8d45, type: 3}
-  - {fileID: 486862447907454378, guid: dd3ea49f5ac444e49839b5fe9dda654f, type: 3}
   menuMusic: []
   ingameMusic: []
+  parsedSkyboxes: []
   menuMusicSource: {fileID: 965639988}
   ingameMusicSource: {fileID: 365324905}
+  parsedBlockSounds: []
+  parsedMaterials: []
+  parsedBlockPrefabs: []
 --- !u!1 &1795155668
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,6 +20,7 @@ public class BlockPlacer : MonoBehaviour
     public void SetBlockPrefab(GameObject newBlock)
     {
         currentBlockPrefab = newBlock;
+        currentBlockPrefab.layer = 9;
         UIBlock.instance.ChangeOutBlock(newBlock);
     }
 
@@ -131,7 +132,10 @@ public class BlockPlacer : MonoBehaviour
             RaycastHit hit2;
             if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit2, 5f) && hit2.transform.GetComponent<BlockSide>())
             {
-                DestroyBlock(hit2.transform.GetComponent<BlockSide>());
+                if (hit2.transform.parent.gameObject.layer != 10)
+                {
+                    DestroyBlock(hit2.transform.GetComponent<BlockSide>());
+                }
             }
         }
         if (Input.GetMouseButtonDown(2))
