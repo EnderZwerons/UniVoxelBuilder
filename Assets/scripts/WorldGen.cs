@@ -260,19 +260,10 @@ public class WorldGen : MonoBehaviour
     {
         blockPrefabs[0] = GameData.instance.planeBlock;
         startingPlane = GameData.instance.planeSize;
-        //StartCoroutine(GenerateFlatPlanePreformance((int)startingPlane.x, (int)startingPlane.y));
-        StartCoroutine(GenerateBiomePerformance((int)startingPlane.x, (int)startingPlane.y, 238907652, Biome.Hills));
+        StartCoroutine(GenerateFlatPlanePreformance((int)startingPlane.x, (int)startingPlane.y));
     }
 
     public GameObject test;
-
-    void Update()
-    {
-        //foreach (GameObject block in GameObject.FindGameObjectsWithTag("block"))
-        //{
-        //    block.GetComponent<MeshRenderer>().enabled = Vector3.Distance(PlayerMovement.instance.transform.position, block.transform.position) < GameData.renderDistance;
-        //}
-    }
 
     public void CreateBlock(Vector3 pos, GameObject blockPrefab)
     {
