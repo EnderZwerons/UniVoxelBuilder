@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class WorldGen : MonoBehaviour
 {
@@ -15,6 +16,15 @@ public class WorldGen : MonoBehaviour
     public static WorldGen instance;
 
     public LayerMask blockLayer;
+
+    public enum Biome
+    {
+        Hills = 0,
+
+        Plains,
+
+        Mountains
+    };
 
     public void GenerateFlatPlane(int x, int z)
     {
@@ -40,6 +50,59 @@ public class WorldGen : MonoBehaviour
             }
         }
     }
+
+    public IEnumerator GenerateBiomePerformance(int x, int z, int seed, Biome biomeType)
+    {
+        UnityEngine.Random.State originalRandomState = UnityEngine.Random.state;
+        UnityEngine.Random.InitState(seed); // Initialize the random seed
+
+        for (int i = 0; i < x; i++)
+        {
+            yield return null;
+            float y = 0f;
+            switch (biomeType)
+            {
+                case Biome.Hills:
+                    y = Mathf.PerlinNoise((float)i / 10f, 0f) * 10f; // Use Perlin noise to generate Y-coordinate for Hills biome
+                    break;
+                case Biome.Plains:
+                    y = Mathf.PerlinNoise((float)i / 10f, 0f) * 5f; // Use Perlin noise to generate Y-coordinate for Plains biome
+                    break;
+                case Biome.Mountains:
+                    y = Mathf.PerlinNoise((float)i / 5f, 0f) * 20f; // Use Perlin noise to generate Y-coordinate for Mountains biome
+                    break;
+                default:
+                    Debug.LogError("Invalid biome type!");
+                    break;
+            }
+            int yInt = Mathf.RoundToInt(y); // Round the Y-coordinate to nearest integer
+            CreateBlock(new Vector3(i, yInt, 0f), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
+
+            for (int i2 = 1; i2 < z; i2++)
+            {
+                float y2 = 0f;
+                switch (biomeType)
+                {
+                    case Biome.Hills:
+                        y2 = Mathf.PerlinNoise((float)i / 10f, (float)i2 / 10f) * 10f; // Use Perlin noise to generate Y-coordinate for Hills biome
+                        break;
+                    case Biome.Plains:
+                        y2 = Mathf.PerlinNoise((float)i / 10f, (float)i2 / 10f) * 5f; // Use Perlin noise to generate Y-coordinate for Plains biome
+                        break;
+                    case Biome.Mountains:
+                        y2 = Mathf.PerlinNoise((float)i / 5f, (float)i2 / 5f) * 20f; // Use Perlin noise to generate Y-coordinate for Mountains biome
+                        break;
+                    default:
+                        Debug.LogError("Invalid biome type!");
+                        break;
+                }
+                int yInt2 = Mathf.RoundToInt(y2);
+                CreateBlock(new Vector3(i, yInt2, i2), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
+            }
+        }
+        UnityEngine.Random.state = originalRandomState;
+    }
+
 
     public IEnumerator GenerateFlatPlanePreformancePerlinNoise(int x, int z, float multiplier)
     {
@@ -70,6 +133,42 @@ public class WorldGen : MonoBehaviour
         }
     }
 
+    public IEnumerator GenerateFromUVBMapPreformanceBinary(string fileName)
+    {
+        string contents = "";
+        try
+        {
+            contents = File.ReadAllText((fileName.EndsWith(".uvbmap") ? StreamingAssets.UVBMapPath + "/" + fileName : StreamingAssets.UVBMapPath + "/" + fileName + ".uvbmap"));
+        }
+        catch
+        {
+            UIController.instance.Popup("could not find uvbmap file!", 2f);
+            yield break;
+        }
+        DestroyAllBlocks();
+        int pause = 0;
+        List<UVBMAPLine> mapLines = UVBFormat.GetUVBMAPLineData((fileName.EndsWith(".uvbmap") ? StreamingAssets.UVBMapPath + "/" + fileName : StreamingAssets.UVBMapPath + "/" + fileName + ".uvbmap"));
+        foreach (UVBMAPLine mapLine in mapLines)
+        {
+            pause++;
+            if (pause > 32)
+            {
+                yield return null;
+                pause = 0;
+            }
+            try
+            {
+                CreateBlock(new Vector3(mapLine.x, mapLine.y, mapLine.z), GameData.instance.availableBlocks[mapLine.index]);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("could not create block! : " + e.ToString());
+            }
+        }
+        UIController.instance.Popup("generated map from " + (fileName.EndsWith(".uvbmap") ? fileName : fileName + ".uvbmap"), 2f);
+    }
+
+
     public IEnumerator GenerateFromUVBMapPreformace(string fileName)
     {
         string contents = "";
@@ -80,6 +179,11 @@ public class WorldGen : MonoBehaviour
         catch
         {
             UIController.instance.Popup("could not find uvbmap file!", 2f);
+            yield break;
+        }
+        if (contents.Contains("!"))
+        {
+            StartCoroutine(GenerateFromUVBMapPreformanceBinary(fileName));
             yield break;
         }
         DestroyAllBlocks();
@@ -156,7 +260,8 @@ public class WorldGen : MonoBehaviour
     {
         blockPrefabs[0] = GameData.instance.planeBlock;
         startingPlane = GameData.instance.planeSize;
-        StartCoroutine(GenerateFlatPlanePreformance((int)startingPlane.x, (int)startingPlane.y));
+        //StartCoroutine(GenerateFlatPlanePreformance((int)startingPlane.x, (int)startingPlane.y));
+        StartCoroutine(GenerateBiomePerformance((int)startingPlane.x, (int)startingPlane.y, 238907652, Biome.Hills));
     }
 
     public GameObject test;
