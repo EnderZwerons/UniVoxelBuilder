@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//this script needs a redo. so TODO: REWRITE THIS
 public class PlayerMovement : MonoBehaviour
 {
+    //why is this public?? I'll fix this later
     public CharacterController controller;
 
     public float speed = 12f;
@@ -55,6 +57,7 @@ public class PlayerMovement : MonoBehaviour
 	{
 		float num = default(float);
 		float num2 = default(float);
+
 		if (Input.GetKey("s"))
 		{
 			num = 0.3f;
@@ -71,6 +74,7 @@ public class PlayerMovement : MonoBehaviour
 		{
 			num2 = 0.3f;
 		}
+
         if (isSprinting)
         {
             num *= 1.75f;
@@ -86,22 +90,28 @@ public class PlayerMovement : MonoBehaviour
             num *= 3f;
             num2 *= 3f;
         }
+
         if (Input.GetKey(KeyCode.Space))
         {
             num *= 1.35f;
             num2 *= 1.35f;
         }
+
 		return new Vector2(num2, num);
 	}
 
     public void SetFly(bool fly)
     {
         isFlying = fly;
+
         GetComponent<BoxCollider>().enabled = fly;
+
+        //lazy way of "disabling" the collider because I'm lazy
         GetComponent<CharacterController>().height = (fly ? 0f : 1.35f);
         GetComponent<CharacterController>().center = new Vector3(0f, (fly) ? 99999f : -0.337f, 0f);
     }
 
+    //you can thank machinegamer for these 2
     public KeyCode sprintKey
     {
         get
@@ -117,6 +127,7 @@ public class PlayerMovement : MonoBehaviour
             return (PlayerPrefs.GetInt("badcontrols") == 1 ? KeyCode.LeftShift : KeyCode.C);
         }
     }
+    //
 
     void Update()
     {
@@ -124,6 +135,8 @@ public class PlayerMovement : MonoBehaviour
         {
             return;
         }
+
+        //I might change these to lerp some other time but yeah
         if (isSprinting && Camera.main.fieldOfView < 100f)
         {
             Camera.main.fieldOfView += Time.deltaTime * 150f;
@@ -132,36 +145,49 @@ public class PlayerMovement : MonoBehaviour
         {
             Camera.main.fieldOfView -= 150f * Time.deltaTime;
         }
+
+        //this code is just a mess. I dont even think commenting it would help because that would imply that it would make it readable (it still wouldn't)
         if (!isFlying)
         {
             if (controller.isGrounded && velocity.y < 0)
             {
                 velocity.y = -2f;
             }
-            float x = -updateKeyboardControls().x ;
-            float z = -updateKeyboardControls().y ;
-            Vector3 move = transform.right * x + transform.forward * z;       
+
+            float x = -updateKeyboardControls().x;
+            float z = -updateKeyboardControls().y;
+
+            Vector3 move = transform.right * x + transform.forward * z;    
+
             if (move.magnitude > 1)
             {
                 move /= move.magnitude;
             }
+
             controller.Move(move * speed * Time.deltaTime);
+
             if (Input.GetKey(KeyCode.Space) && isGrounded)
             {
                 velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             }
+
             velocity.y += gravity * Time.deltaTime;
             controller.Move(velocity * Time.deltaTime);
+
             return;
         }
+        
         float x2 = -updateKeyboardControls().x;
         float z2 = -updateKeyboardControls().y;
+
         Vector3 move2 = transform.right * x2 + transform.forward * z2;
         move2.y += (Input.GetKey(KeyCode.Space) ? 3f : (Input.GetKey(crouchKey) ? -3f : 0f));
+
         if (move2.magnitude > 1)
         {
             move2 /= move2.magnitude;
         }
+
         controller.Move(move2 * speed * Time.deltaTime);
     }
 }

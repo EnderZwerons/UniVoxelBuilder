@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+//this'll probably get removed at some point because there will be a new ui system
 public class CommonSlider : MonoBehaviour
 {
     public bool prefs;
@@ -20,6 +21,7 @@ public class CommonSlider : MonoBehaviour
     {
         thisSlider = GetComponent<Slider>();
         thisSlider.maxValue = maxValue;
+        
         if (prefs)
         {
             thisSlider.value = PlayerPrefs.GetFloat(prefsValue);

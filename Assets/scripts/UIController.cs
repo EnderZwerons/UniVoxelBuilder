@@ -6,6 +6,7 @@ using System.IO;
 using System;
 using UnityEngine.UI;
 
+//speaking of ui, at some point I'm gonna have to implement that into streaming assets at some point.... oh boy...
 public class UIController : MonoBehaviour
 {
     public GameObject blockMenu;
@@ -30,6 +31,7 @@ public class UIController : MonoBehaviour
         public TextMeshProUGUI popupText;
     }
 
+    //I'm bad at queuing systems. can you tell?
     public class PopupInstance
     {
         public string popupText;
@@ -57,30 +59,39 @@ public class UIController : MonoBehaviour
 
     void Update()
     {
+        //my goodness. I need to redo this
         for (int i = 0; i < popups.Count; i++)
         {
             PopupInstance popup = popups[i];
+
             if (popup.timeLeft <= 0f)
             {
                 popups.RemoveAt(popups.IndexOf(popup));
                 RemovePopup();
                 canMoveToNextPopup = true;
+
                 continue;
             }
+
             popup.timeLeft -= 1f * Time.deltaTime;
         }
+
         if (popups.Count == 0)
         {
             popupIndex = 1;
         }
+
         if (canMoveToNextPopup && popups.Count != 0)
         {
             DoPopup(popups[popupIndex]);
         }
+
+        //open inventory if no textfields are open and 
         if (Input.GetKeyDown("e") && !Typing)
         {
             Helper.LockCursor(inventoryOpen);
             blockMenu.SetActive(!blockMenu.activeInHierarchy);
+
             inventoryOpen = !inventoryOpen;
         }
     }
@@ -89,6 +100,7 @@ public class UIController : MonoBehaviour
     {
         get
         {
+            //if any input fields are open and in the scene, return true.
             foreach (TMP_InputField IF in Resources.FindObjectsOfTypeAll<TMP_InputField>())
             {
                 if (IF.gameObject.activeInHierarchy && IF.isFocused)
@@ -96,6 +108,7 @@ public class UIController : MonoBehaviour
                     return true;
                 }
             }
+
             return false;
         }
     }
@@ -107,11 +120,13 @@ public class UIController : MonoBehaviour
 
     public void LoadMapWithButton(TMP_InputField IF)
     {
+        //check if the text is empty, and if so tell the stupid idiot who clicked the button to PRESS ENTER!! (this is a joke it's a joke I was joking)
         if (IF.text == "")
         {
             UIController.instance.Popup("make sure to press enter!", 0.5f);
             return;
         }
+
         AreYouSurePopup(string.Format("this will delete your current build! are you sure?", (IF.text.EndsWith(".uvbmap") ? IF.text : IF.text + ".uvbmap")), 1);
     }
 
@@ -122,6 +137,7 @@ public class UIController : MonoBehaviour
 
     public void SaveMapWithButton(TMP_InputField IF)
     {
+        //check if the text is empty, and if so tell the stupid idiot who clicked the button to PRESS ENTER!! (this is a joke it's a joke I was joking)
         if (IF.text == "")
         {
             UIController.instance.Popup("make sure to press enter!", 0.5f);
@@ -131,6 +147,7 @@ public class UIController : MonoBehaviour
         {
             AreYouSurePopup(string.Format("\"{0}\" already exists! would you like to replace it?", (IF.text.EndsWith(".uvbmap") ? IF.text : IF.text + ".uvbmap")), 0);
         }
+        
         GameData.SaveToUVBMAPFile(IF.text);
     }
 

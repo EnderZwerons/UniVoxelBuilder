@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//lazyness at it's peak. I couldn't be bothered to find a real way to set up block colliders.
 public class BlockSide : MonoBehaviour
 {
 	public enum BlockSideType

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
-using System.Runtime.Serialization.Formatters.Binary;
 
 public class WorldGen : MonoBehaviour
 {
@@ -31,6 +30,7 @@ public class WorldGen : MonoBehaviour
         for (int i = 0; i < x; i++)
         {
             CreateBlock(new Vector3(i, 0f, 0f), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
+
             for (int i2 = 1; i2 < z; i2++)
             {
                 CreateBlock(new Vector3(i, 0f, i2), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
@@ -43,7 +43,9 @@ public class WorldGen : MonoBehaviour
         for (int i = 0; i < x; i++)
         {
             yield return null;
+
             CreateBlock(new Vector3(i, 0f, 0f), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
+
             for (int i2 = 1; i2 < z; i2++)
             {
                 CreateBlock(new Vector3(i, 0f, i2), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
@@ -51,6 +53,7 @@ public class WorldGen : MonoBehaviour
         }
     }
 
+    //unused for now but it actually works because chatgpt made it instead of me
     public IEnumerator GenerateBiomePerformance(int x, int z, int seed, Biome biomeType)
     {
         UnityEngine.Random.State originalRandomState = UnityEngine.Random.state;
@@ -103,14 +106,16 @@ public class WorldGen : MonoBehaviour
         UnityEngine.Random.state = originalRandomState;
     }
 
-
+    //unused because it's bad
     public IEnumerator GenerateFlatPlanePreformancePerlinNoise(int x, int z, float multiplier)
     {
         for (int i = 0; i < x; i++)
         {
             yield return null;
+
             float perlin = (float)Math.Round(Mathf.PerlinNoise(UnityEngine.Random.Range(0, 0.99f), UnityEngine.Random.Range(0, 0.99f)) * multiplier);
             CreateBlock(new Vector3(i, perlin, 0f), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
+
             if (perlin > 0f)
             {
                 for (int j = (int)perlin; j > 0f; j--)
@@ -118,6 +123,7 @@ public class WorldGen : MonoBehaviour
                     CreateBlock(new Vector3(i, j, 0f), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
                 }
             }
+
             for (int i2 = 1; i2 < z; i2++)
             {
                 float perlin2 = (float)Math.Round(Mathf.PerlinNoise(UnityEngine.Random.Range(0, 0.99f), UnityEngine.Random.Range(0, 0.99f)) * multiplier);
@@ -136,6 +142,8 @@ public class WorldGen : MonoBehaviour
     public IEnumerator GenerateFromUVBMapPreformanceBinary(string fileName)
     {
         string contents = "";
+
+        //check if uvbmap file exists, if it doesn't tell the player it doesn't.
         try
         {
             contents = File.ReadAllText((fileName.EndsWith(".uvbmap") ? StreamingAssets.UVBMapPath + "/" + fileName : StreamingAssets.UVBMapPath + "/" + fileName + ".uvbmap"));
@@ -145,17 +153,22 @@ public class WorldGen : MonoBehaviour
             UIController.instance.Popup("could not find uvbmap file!", 2f);
             yield break;
         }
+
         DestroyAllBlocks();
         int pause = 0;
         List<UVBMAPLine> mapLines = UVBFormat.GetUVBMAPLineData((fileName.EndsWith(".uvbmap") ? StreamingAssets.UVBMapPath + "/" + fileName : StreamingAssets.UVBMapPath + "/" + fileName + ".uvbmap"));
+
         foreach (UVBMAPLine mapLine in mapLines)
         {
+            //pause every 32 blocks to generate fast, but to also keep it performance-friendly
             pause++;
             if (pause > 32)
             {
                 yield return null;
                 pause = 0;
             }
+
+            //lazy buffer
             try
             {
                 CreateBlock(new Vector3(mapLine.x, mapLine.y, mapLine.z), GameData.instance.availableBlocks[mapLine.index]);
@@ -165,13 +178,15 @@ public class WorldGen : MonoBehaviour
                 Debug.Log("could not create block! : " + e.ToString());
             }
         }
+
         UIController.instance.Popup("generated map from " + (fileName.EndsWith(".uvbmap") ? fileName : fileName + ".uvbmap"), 2f);
     }
 
-
+    //just read the other comments I'm lazy
     public IEnumerator GenerateFromUVBMapPreformace(string fileName)
     {
         string contents = "";
+
         try
         {
             contents = File.ReadAllText((fileName.EndsWith(".uvbmap") ? StreamingAssets.UVBMapPath + "/" + fileName : StreamingAssets.UVBMapPath + "/" + fileName + ".uvbmap"));
@@ -181,11 +196,14 @@ public class WorldGen : MonoBehaviour
             UIController.instance.Popup("could not find uvbmap file!", 2f);
             yield break;
         }
+
+        //check if file is binary
         if (contents.Contains("!"))
         {
             StartCoroutine(GenerateFromUVBMapPreformanceBinary(fileName));
             yield break;
         }
+
         DestroyAllBlocks();
         int pause = 0;
         foreach (string line in contents.Split('\r', '\n'))
@@ -196,7 +214,9 @@ public class WorldGen : MonoBehaviour
                 yield return null;
                 pause = 0;
             }
+
             string[] UVBParams = line.Split(',');
+
             try
             {
                 CreateBlock(new Vector3(float.Parse(UVBParams[1]), float.Parse(UVBParams[2]), float.Parse(UVBParams[3])), GameData.instance.availableBlocks[int.Parse(UVBParams[0])]);
@@ -206,9 +226,11 @@ public class WorldGen : MonoBehaviour
                 Debug.Log("could not create block! : " + e.ToString());
             }
         }
+
         UIController.instance.Popup("generated map from " + (fileName.EndsWith(".uvbmap") ? fileName : fileName + ".uvbmap"), 2f);
     }
 
+    //unused for now
     public static Mesh CombineBlocks()
     {
         List<MeshFilter> meshFilters = new List<MeshFilter>();
@@ -227,6 +249,7 @@ public class WorldGen : MonoBehaviour
         return mesh;
     }
 
+    //unused
     public void GenerateFromUVBMap(string fileName)
     {
         string contents = File.ReadAllText((fileName.EndsWith(".uvbmap") ? StreamingAssets.UVBMapPath + "/" + fileName : StreamingAssets.UVBMapPath + "/" + fileName + ".uvbmap"));

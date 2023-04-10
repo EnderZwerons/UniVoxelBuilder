@@ -21,10 +21,14 @@ public class UIBlock : MonoBehaviour
         {
             Destroy(currentBlock);
         }
+
+        //setup block
         currentBlock = Instantiate(newBlock, blockInstantiationPoint);
         currentBlock.tag = "Untagged";
         currentBlock.transform.localPosition = Vector3.zero;
         currentBlock.layer = 8;
+
+        //oh that's where rotator is used...
         Destroy(currentBlock.GetComponent<BoxCollider>());
         currentBlock.AddComponent<Rotator>().rotationAxes.y = 0.05f;
     }

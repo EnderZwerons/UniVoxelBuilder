@@ -2,18 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//for now this is just for locking the cursor but it might have more later on
 public class Helper : MonoBehaviour
 {
     public static void LockCursor(bool locked)
     {
-        if (locked)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            return;
-        }
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        //screen.lockcursor was easier but this works too... I guess..
+        Cursor.lockState = locked ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = !locked;
     }
 
     public static bool CursorLocked

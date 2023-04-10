@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//this will of course get added onto as I add more things into streaming assets (I mean at this point unity is just the 3d rendering lol)
 public class StreamingAssets : MonoBehaviour
 {
     public static string UVBMapPath

@@ -8,15 +8,18 @@ public class Mouselook : MonoBehaviour
 
     public Transform playerBody;
 
-    float xRotation = 0f;
+    private float xRotation = 0f;
 
 	void Start()
     {
+        //this is stupid I dont know why the editor sens is so slow but it is for some reason
         if (Application.isEditor)
         {
             mouseSensitivity *= 5f;
         }
-        Cursor.lockState = CursorLockMode.Locked;
+
+        //lock cursor and set the clip planes
+        Helper.LockCursor(true);
         GetComponent<Camera>().farClipPlane = PlayerPrefs.GetFloat("renderDistance");
 	}
 	
@@ -26,10 +29,13 @@ public class Mouselook : MonoBehaviour
         {
             return;
         }
+
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         playerBody.Rotate(Vector3.up * mouseX);
     }

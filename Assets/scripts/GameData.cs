@@ -195,7 +195,7 @@ public class GameData : MonoBehaviour
                 continue;
             }
 
-            //what a great file format. (no, no it's not)
+            //ok not as bad now
             UVBMAPLine data = new UVBMAPLine
             {
                 x = (int)obj.transform.localPosition.x,
@@ -206,7 +206,7 @@ public class GameData : MonoBehaviour
             parsedLines.Add(data);
         }
 
-        //write the "great" file format to the uvbmap file.
+        //write the file format to the file
         UVBFormat.SaveUVB(parsedLines, (fileName.EndsWith(".uvbmap") ? StreamingAssets.UVBMapPath + "/" + fileName : StreamingAssets.UVBMapPath + "/" + fileName + ".uvbmap"));
     }
 

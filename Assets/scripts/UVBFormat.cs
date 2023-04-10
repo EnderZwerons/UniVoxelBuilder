@@ -63,7 +63,8 @@ class UVBFormat
             b = reader.ReadByte();
             result |= (b & 0x7F) << shift;
             shift += 7;
-        } while ((b & 0x80) != 0);
+        } 
+        while ((b & 0x80) != 0);
 
         return result;
     }
@@ -86,7 +87,7 @@ class UVBFormat
                 // Write index value
                 WriteVariableLengthInt(writer, data.index);
             }
-    }
+        }
     }
 }
 

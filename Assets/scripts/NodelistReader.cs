@@ -5,6 +5,7 @@ using System;
 using System.IO;
 
 //the nodelist namespace does not have more than the reader for now, but it may in the future.
+//also it has so many comments because I kept asking chatgpt if it was a good script because I thought it was funny and it kept telling me to add more comments and then I just left them in because I'm lazy
 namespace Nodelist
 {
     //the purpose of the nodelist reader is to split a .nodelist file into nodes and store it into a list of .nodelist files for other scripts to use.
