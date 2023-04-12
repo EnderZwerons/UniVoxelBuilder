@@ -58,3 +58,10 @@ node:blockprefabs
 default:col on:0,0.5,0,1,0,1;0,-0.5,0,1,0,1;0.5,0,0,0,1,1;-0.5,0,0,0,1,1;0,0,-0.5,1,1,0;0,0,0.5,1,1,0:defaultBlock
 water:col off:0,0.5,0,1,0,1;0,-0.5,0,1,0,1;0.5,0,0,0,1,1;-0.5,0,0,0,1,1;0,0,-0.5,1,1,0;0,0,0.5,1,1,0:defaultBlock
 endNode
+
+node:biomes
+flat:0
+plains:5
+hills:10
+mountains:20
+endNode

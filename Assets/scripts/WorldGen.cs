@@ -16,15 +16,6 @@ public class WorldGen : MonoBehaviour
 
     public LayerMask blockLayer;
 
-    public enum Biome
-    {
-        Hills = 0,
-
-        Plains,
-
-        Mountains
-    };
-
     public void GenerateFlatPlane(int x, int z)
     {
         for (int i = 0; i < x; i++)
@@ -54,89 +45,37 @@ public class WorldGen : MonoBehaviour
     }
 
     //unused for now but it actually works because chatgpt made it instead of me
-    public IEnumerator GenerateBiomePerformance(int x, int z, int seed, Biome biomeType)
+    public IEnumerator GenerateBiomePerformance(int x, int z, int seed, GameData.Biome biome)
     {
+        if (biome.perlinMult == 0)
+        {
+            StartCoroutine(GenerateFlatPlanePreformance(x, z));
+            yield break;
+        }
         UnityEngine.Random.State originalRandomState = UnityEngine.Random.state;
         UnityEngine.Random.InitState(seed); // Initialize the random seed
 
         for (int i = 0; i < x; i++)
         {
             yield return null;
+
             float y = 0f;
-            switch (biomeType)
-            {
-                case Biome.Hills:
-                    y = Mathf.PerlinNoise((float)i / 10f, 0f) * 10f; // Use Perlin noise to generate Y-coordinate for Hills biome
-                    break;
-                case Biome.Plains:
-                    y = Mathf.PerlinNoise((float)i / 10f, 0f) * 5f; // Use Perlin noise to generate Y-coordinate for Plains biome
-                    break;
-                case Biome.Mountains:
-                    y = Mathf.PerlinNoise((float)i / 5f, 0f) * 20f; // Use Perlin noise to generate Y-coordinate for Mountains biome
-                    break;
-                default:
-                    Debug.LogError("Invalid biome type!");
-                    break;
-            }
+            y = Mathf.PerlinNoise((float)i / 10f, 0f) * biome.perlinMult;
             int yInt = Mathf.RoundToInt(y); // Round the Y-coordinate to nearest integer
+
             CreateBlock(new Vector3(i, yInt, 0f), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
 
             for (int i2 = 1; i2 < z; i2++)
             {
                 float y2 = 0f;
-                switch (biomeType)
-                {
-                    case Biome.Hills:
-                        y2 = Mathf.PerlinNoise((float)i / 10f, (float)i2 / 10f) * 10f; // Use Perlin noise to generate Y-coordinate for Hills biome
-                        break;
-                    case Biome.Plains:
-                        y2 = Mathf.PerlinNoise((float)i / 10f, (float)i2 / 10f) * 5f; // Use Perlin noise to generate Y-coordinate for Plains biome
-                        break;
-                    case Biome.Mountains:
-                        y2 = Mathf.PerlinNoise((float)i / 5f, (float)i2 / 5f) * 20f; // Use Perlin noise to generate Y-coordinate for Mountains biome
-                        break;
-                    default:
-                        Debug.LogError("Invalid biome type!");
-                        break;
-                }
+                y2 = Mathf.PerlinNoise((float)i / 10f, (float)i2 / 10f) * biome.perlinMult;
                 int yInt2 = Mathf.RoundToInt(y2);
+
                 CreateBlock(new Vector3(i, yInt2, i2), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
             }
         }
+
         UnityEngine.Random.state = originalRandomState;
-    }
-
-    //unused because it's bad
-    public IEnumerator GenerateFlatPlanePreformancePerlinNoise(int x, int z, float multiplier)
-    {
-        for (int i = 0; i < x; i++)
-        {
-            yield return null;
-
-            float perlin = (float)Math.Round(Mathf.PerlinNoise(UnityEngine.Random.Range(0, 0.99f), UnityEngine.Random.Range(0, 0.99f)) * multiplier);
-            CreateBlock(new Vector3(i, perlin, 0f), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
-
-            if (perlin > 0f)
-            {
-                for (int j = (int)perlin; j > 0f; j--)
-                {
-                    CreateBlock(new Vector3(i, j, 0f), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
-                }
-            }
-
-            for (int i2 = 1; i2 < z; i2++)
-            {
-                float perlin2 = (float)Math.Round(Mathf.PerlinNoise(UnityEngine.Random.Range(0, 0.99f), UnityEngine.Random.Range(0, 0.99f)) * multiplier);
-                CreateBlock(new Vector3(i, perlin2, i2), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
-                if (perlin2 > 0f)
-                {
-                    for (int j = (int)perlin2; j > 0f; j--)
-                    {
-                        CreateBlock(new Vector3(i, j, i2), blockPrefabs[UnityEngine.Random.Range(0, blockPrefabs.Length)]);
-                    }
-                }
-            }
-        }
     }
 
     public IEnumerator GenerateFromUVBMapPreformanceBinary(string fileName)
@@ -283,17 +222,22 @@ public class WorldGen : MonoBehaviour
     {
         blockPrefabs[0] = GameData.instance.planeBlock;
         startingPlane = GameData.instance.planeSize;
-        StartCoroutine(GenerateFlatPlanePreformance((int)startingPlane.x, (int)startingPlane.y));
+        StartCoroutine(GenerateBiomePerformance((int)startingPlane.x, (int)startingPlane.y, UnityEngine.Random.Range(0, int.MaxValue), GameData.instance.currentBiome));
     }
 
     public GameObject test;
 
     public void CreateBlock(Vector3 pos, GameObject blockPrefab)
     {
+        //instantiate the block
         GameObject block = Instantiate(blockPrefab, instantiationPoint);
+
+        //setup layer, position, and name
         block.layer = 9;
         block.transform.localPosition = pos;
         block.name = block.name.Replace("(Clone)", "");
+
+        //increment the block placed amount
         GameData.instance.blockPlacedAmount++;
     }
 }

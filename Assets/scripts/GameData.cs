@@ -28,6 +28,8 @@ public class GameData : MonoBehaviour
 
     public Dropdown blockListMenu;
 
+    public Dropdown biomeList;
+
     public List<AudioClip> menuMusic;
 
     public List<AudioClip> ingameMusic;
@@ -43,6 +45,10 @@ public class GameData : MonoBehaviour
     public List<Material> parsedMaterials;
 
     public List<GameObject> parsedBlockPrefabs;
+
+    public List<Biome> parsedBiomes;
+
+    public Biome currentBiome;
 
     public static float renderDistance
     {
@@ -125,6 +131,14 @@ public class GameData : MonoBehaviour
         public Mesh mesh;
     }
 
+    [Serializable]
+    public class Biome
+    {
+        public string name;
+
+        public float perlinMult;
+    }
+
     //sorry, make that 3. also yes I'm commenting from top to bottom. cry.
     public void SetRenderDistance(float distance)
     {
@@ -141,6 +155,7 @@ public class GameData : MonoBehaviour
         InitializeBlocks();
         StartCoroutine(InitializeMusic());
         InitializeSkyboxes();
+        InitializeBiomes();
     }
 
     void Update()
@@ -164,7 +179,6 @@ public class GameData : MonoBehaviour
         return BlockData.BlockType.normal;
     }
 
-    //these two methods are never used
     public void SetPlaneBlock(int num)
     {
         planeBlock = availableBlocks[num];
@@ -174,7 +188,11 @@ public class GameData : MonoBehaviour
     {
         planeSize = planeSizes[num];
     }
-    //and are completely useless
+
+    public void SetBiome(int num)
+    {
+        currentBiome = parsedBiomes[num];
+    }
 
     public static void SaveToUVBMAPFile(string fileName)
     {
@@ -270,6 +288,36 @@ public class GameData : MonoBehaviour
     {
         //I collapsed it into one line because I thought it was funny.
         RenderSettings.skybox.SetTexture("_UpTex", SB.up); RenderSettings.skybox.SetTexture("_DownTex", SB.down); RenderSettings.skybox.SetTexture("_FrontTex", SB.front); RenderSettings.skybox.SetTexture("_BackTex", SB.back); RenderSettings.skybox.SetTexture("_LeftTex", SB.left); RenderSettings.skybox.SetTexture("_RightTex", SB.right);
+    }
+
+    public void InitializeBiomes()
+    {
+        List<string> biomeLines = NodelistReader.GetNodelistFile("Gamedata").GetNode("biomes").lines;
+
+        for (int i = 0; i < biomeLines.Count; i++)
+        {
+            //duct tape
+            if (biomeLines[i] == "")
+            {
+                return;
+            }
+
+            //make new biome
+            Biome newBiome = new Biome();
+            newBiome.name = biomeLines[i].Split(':')[0];
+            newBiome.perlinMult = float.Parse(biomeLines[i].Split(':')[1]);
+
+            //add it to parsed biomes
+            parsedBiomes.Add(newBiome);
+        }
+
+        List<string> options = new List<string>();
+        for (int i = 0; i < parsedBiomes.Count; i++)
+        {
+            options.Add(parsedBiomes[i].name);
+        }
+
+        biomeList.AddOptions(options);
     }
 
     public void InitializeSkyboxes()
@@ -384,9 +432,9 @@ public class GameData : MonoBehaviour
 
         //parse options list
         List<string> options = new List<string>();
-        for (int i = 0; i < availableBlocks.Count; i++)
+        for (int i = 0; i < blockData.Count; i++)
         {
-            options.Add(availableBlocks[i].name);
+            options.Add(blockData[i].name);
         }
 
         //insert options into ui lists
