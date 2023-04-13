@@ -4134,21 +4134,7 @@ MonoBehaviour:
   m_ItemImage: {fileID: 0}
   m_Value: 0
   m_Options:
-    m_Options:
-    - m_Text: Tiny
-      m_Image: {fileID: 0}
-    - m_Text: Small
-      m_Image: {fileID: 0}
-    - m_Text: Medium
-      m_Image: {fileID: 0}
-    - m_Text: Large
-      m_Image: {fileID: 0}
-    - m_Text: Giant
-      m_Image: {fileID: 0}
-    - m_Text: Insane
-      m_Image: {fileID: 0}
-    - m_Text: Computer Destroyer
-      m_Image: {fileID: 0}
+    m_Options: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -6777,7 +6763,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Tiny
+  m_Text: 
 --- !u!222 &1441442570
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9276,18 +9262,12 @@ MonoBehaviour:
   planeSize: {x: 20, y: 20}
   planeBlock: {fileID: 0}
   availableBlocks: []
-  planeSizes:
-  - {x: 10, y: 10}
-  - {x: 20, y: 20}
-  - {x: 35, y: 35}
-  - {x: 60, y: 60}
-  - {x: 100, y: 100}
-  - {x: 250, y: 250}
-  - {x: 1000, y: 1000}
+  parsedPlaneSizes: []
   blockPlacedAmount: 0
   blockList: {fileID: 1472649226}
   blockListMenu: {fileID: 1686730148}
   biomeList: {fileID: 979721033}
+  planeSizeList: {fileID: 839126753}
   menuMusic: []
   ingameMusic: []
   parsedSkyboxes: []

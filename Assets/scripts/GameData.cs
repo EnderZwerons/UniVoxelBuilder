@@ -18,7 +18,7 @@ public class GameData : MonoBehaviour
 
     public List<GameObject> availableBlocks = new List<GameObject>();
 
-    public Vector2[] planeSizes;
+    public List<PlaneSize> parsedPlaneSizes;
 
     public int blockPlacedAmount;
 
@@ -29,6 +29,8 @@ public class GameData : MonoBehaviour
     public Dropdown blockListMenu;
 
     public Dropdown biomeList;
+
+    public Dropdown planeSizeList;
 
     public List<AudioClip> menuMusic;
 
@@ -139,6 +141,14 @@ public class GameData : MonoBehaviour
         public float perlinMult;
     }
 
+    [Serializable]
+    public class PlaneSize
+    {
+        public string name;
+
+        public Vector2 plane;
+    }
+
     //sorry, make that 3. also yes I'm commenting from top to bottom. cry.
     public void SetRenderDistance(float distance)
     {
@@ -156,6 +166,7 @@ public class GameData : MonoBehaviour
         StartCoroutine(InitializeMusic());
         InitializeSkyboxes();
         InitializeBiomes();
+        InitializePlaneSize();
     }
 
     void Update()
@@ -186,7 +197,7 @@ public class GameData : MonoBehaviour
 
     public void SetPlaneSize(int num)
     {
-        planeSize = planeSizes[num];
+        planeSize = parsedPlaneSizes[num].plane;
     }
 
     public void SetBiome(int num)
@@ -320,6 +331,36 @@ public class GameData : MonoBehaviour
         biomeList.AddOptions(options);
     }
 
+    public void InitializePlaneSize()
+    {
+        List<string> planeLines = NodelistReader.GetNodelistFile("Gamedata").GetNode("planesizes").lines;
+
+        for (int i = 0; i < planeLines.Count; i++)
+        {
+            //duct tape
+            if (planeLines[i] == "")
+            {
+                return;
+            }
+
+            //make new biome
+            PlaneSize newPlaneSize = new PlaneSize();
+            newPlaneSize.name = planeLines[i].Split(':')[0];
+            newPlaneSize.plane = new Vector2(float.Parse(planeLines[i].Split(':')[1].Split(',')[0]), float.Parse(planeLines[i].Split(':')[1].Split(',')[1]));
+
+            //add it to parsed biomes
+            parsedPlaneSizes.Add(newPlaneSize);
+        }
+
+        List<string> options = new List<string>();
+        for (int i = 0; i < parsedPlaneSizes.Count; i++)
+        {
+            options.Add(parsedPlaneSizes[i].name);
+        }
+
+        planeSizeList.AddOptions(options);
+    }
+
     public void InitializeSkyboxes()
     {
         RenderSettings.skybox = GetMaterialFromList("skybox");
@@ -381,6 +422,7 @@ public class GameData : MonoBehaviour
             menuMusicSource.clip = menuMusic[UnityEngine.Random.Range(0, menuMusic.Count)];
             return;
         }
+
         ingameMusicSource.clip = ingameMusic[UnityEngine.Random.Range(0, ingameMusic.Count)];
     }
     
@@ -482,6 +524,7 @@ public class GameData : MonoBehaviour
         {
             print("waiting...");
         }
+
         return parsedBlockPrefabs[index];
     }
 
@@ -548,6 +591,7 @@ public class GameData : MonoBehaviour
         {
             print("waiting...");
         }
+
         return parsedMaterials.Find(x => x.name == name);
     }
 
@@ -596,6 +640,7 @@ public class GameData : MonoBehaviour
         {
             print("waiting...");
         }
+
         return parsedBlockSounds.Find(x => x.name == name);
     }
 
@@ -658,6 +703,8 @@ public class GameData : MonoBehaviour
         right.AddComponent<BoxCollider>().center = input.centers[5];
         right.GetComponent<BoxCollider>().size = input.sizes[5];
         right.GetComponent<BoxCollider>().isTrigger = !input.colOn;
+
+        //return the factoried block
         return obj;
     }
 
@@ -709,35 +756,51 @@ public class GameData : MonoBehaviour
 	{
         //thanks chatgpt (I'm not lazy you're lazy)
 		string[] array = File.ReadAllLines(StreamingAssets.ModelPath + "/" + filePath + ".obj");
+        
+        //declare lists
 		List<Vector3> list = new List<Vector3>();
 		List<Vector3> list2 = new List<Vector3>();
 		List<Vector2> list3 = new List<Vector2>();
 		List<int> list4 = new List<int>();
+
 		foreach (string text in array)
 		{
+            //vertices
 			if (text.StartsWith("v "))
 			{
 				string[] array2 = text.Split(' ');
+
 				list.Add(new Vector3(float.Parse(array2[1]), float.Parse(array2[2]), float.Parse(array2[3])));
 			}
+
+            //normals
 			else if (text.StartsWith("vn "))
 			{
                 string[] array3 = text.Split(' ');
+
 				list2.Add(new Vector3(float.Parse(array3[1]), float.Parse(array3[2]), float.Parse(array3[3])));
 			}
+
+            //tex coords
 			else if (text.StartsWith("vt "))
 			{
                 string[] array4 = text.Split(' ');
+
 				list3.Add(new Vector2(float.Parse(array4[1]), float.Parse(array4[2])));
 			}
+
+            //triangles
 			else if (text.StartsWith("f "))
 			{
                 string[] array5 = text.Split(' ');
+
 				list4.Add(int.Parse(array5[1].Split('/')[0]) - 1);
 				list4.Add(int.Parse(array5[2].Split('/')[0]) - 1);
 				list4.Add(int.Parse(array5[3].Split('/')[0]) - 1);
 			}
 		}
+
+        //parse the a new mesh and return it
 		return new Mesh
 		{
 			vertices = list.ToArray(),
